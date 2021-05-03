@@ -1,0 +1,13 @@
+.vscode
+# bin
+# lib
+node_modules
+src
+.gitignore
+coverage
+# .npmignore
+# LICENSE
+# package.json
+# package-lock.lock
+# README.md
+tsconfig.json

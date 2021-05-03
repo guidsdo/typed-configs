@@ -13,9 +13,9 @@
     "outDir": "lib/",
     "sourceMap": false,
     "declaration": true,
-    "target": "es2018"
+    "target": "es2018",
+    "lib": ["ES2018"],
+    "types": ["node", "jest"]
   },
-  "include": [
-    "src"
-  ]
+  "include": ["src"]
 }

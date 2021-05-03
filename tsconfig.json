@@ -10,8 +10,9 @@
     "noImplicitReturns": true,
     "noUnusedLocals": true,
     "newLine": "LF",
-    "outDir": "dist/",
-    "sourceMap": true,
+    "outDir": "lib/",
+    "sourceMap": false,
+    "declaration": true,
     "target": "es2018"
   },
   "include": [

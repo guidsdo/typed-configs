@@ -1,0 +1,39 @@
+{
+  "name": "typedconfig",
+  "version": "0.0.1",
+  "description": "Library for accessing your config variables in a typed manner, with runtime checking. Supports .yml and enviroment variables",
+  "main": "lib/index.js",
+  "author": "guidsdo",
+  "license": "Apache-2.0",
+  "homepage": "https://github.com/guidsdo/TypedConfig",
+  "bugs": {
+    "url": "https://github.com/guidsdo/guidsdo/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/guidsdo/TypedConfig.git"
+  },
+  "keywords": [
+    "env",
+    "environment",
+    "config",
+    "typed config",
+    "config inheritance",
+    "yml",
+    "typescript",
+    "decorators"
+  ],
+  "scripts": {
+    "build": "rm -rf lib && tsc",
+    "prepublish": "yarn build"
+  },
+  "dependencies": {
+    "reflect-metadata": "^0.1.13",
+    "yamljs": "^0.3.0"
+  },
+  "devDependencies": {
+    "@types/node": "^14.14.6",
+    "@types/yamljs": "0.2.30",
+    "typescript": "~4.2.3"
+  }
+}

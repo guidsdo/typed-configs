@@ -25,5 +25,6 @@ module.exports = {
     testEnvironment: "node",
 
     // An array of regexp pattern strings that are matched against all test paths, matched tests are skipped
-    testPathIgnorePatterns: ["/node_modules/", "/lib"]
+    testPathIgnorePatterns: ["/node_modules/", "/lib"],
+    setupFiles: ["<rootDir>/src/testSetup.ts"]
 };

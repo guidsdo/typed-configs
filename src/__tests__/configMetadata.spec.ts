@@ -159,7 +159,7 @@ describe("configMetadata", () => {
 
         it("should throw an error when the recommended value is of the wrong type", () => {
             // Mimick what Reflect Metadata does when there is a decorator and the type isn't a single primitive
-            Reflect.defineMetadata("design:type", ExampleClass, String, "propertyDefaultHelloWorld");
+            Reflect.defineMetadata("design:type", String, ExampleClass.prototype, "propertyDefaultHelloWorld");
             addConfigField(
                 ExampleClass.prototype,
                 "propertyDefaultHelloWorld",
@@ -174,11 +174,11 @@ describe("configMetadata", () => {
 
         it("should throw an error when the name fields doesn't adhere to the 'IEEE Std 1003.1-2017' standard", () => {
             // Mimick what Reflect Metadata does when there is a decorator and the type isn't a single primitive
-            Reflect.defineMetadata("design:type", ExampleClass, String, "propertyDefaultHelloWorld");
+            Reflect.defineMetadata("design:type", String, ExampleClass.prototype, "propertyDefaultHelloWorld");
             addConfigField(
                 ExampleClass.prototype,
                 "propertyDefaultHelloWorld",
-                { required: false, name: "a name", description: "X" },
+                { required: false, name: "a name", description: "X", recommendedValue: "Hi there" },
                 true
             );
 
@@ -189,17 +189,15 @@ describe("configMetadata", () => {
 
         it("should throw not throw when all is fine and save the type of the fields", () => {
             // Mimick what Reflect Metadata does when there is a decorator and the type isn't a single primitive
-            Reflect.defineMetadata("design:type", ExampleClass, String, "propertyDefaultHelloWorld");
+            Reflect.defineMetadata("design:type", String, ExampleClass.prototype, "propertyDefaultHelloWorld");
             addConfigField(
                 ExampleClass.prototype,
                 "propertyDefaultHelloWorld",
-                { required: false, name: "a name", description: "X" },
+                { required: false, name: "A_NAME", description: "X", recommendedValue: "Hi there" },
                 true
             );
 
-            expect(() => processConfigFieldOptions(ExampleClass)).toThrow(
-                "The name option of property 'propertyDefaultHelloWorld' must adhere to the by 'IEEE Std 1003.1-2017' defined standard."
-            );
+            expect(() => processConfigFieldOptions(ExampleClass)).not.toThrow();
         });
     });
 });

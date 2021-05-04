@@ -9,6 +9,10 @@ export class ExampleClass {
     propertyObject!: ExampleClass;
 }
 
+export class ExtraExampleClass {
+    propertyDefaultFooBar: string = "FooBar";
+}
+
 /**
  * Removes all fields and metadata from the given class.
  */

@@ -96,6 +96,13 @@ class ConfigManager {
             instance[property] = snapshot[property];
         }
     }
+
+    /**
+     * Remove all configs from the config manager. This doesn't remove any of the individual config data though.
+     */
+    removeAllConfigs() {
+        this.configs.clear();
+    }
 }
 
 export const Configs = new ConfigManager();

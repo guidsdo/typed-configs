@@ -57,17 +57,19 @@ class ConfigManager {
      * Returns an array of all the properties and their options. This can be exported to a file for example.
      * Awaits a javascript tick, so we know for sure that all config have been loaded. This only works if the config is used somewhere.
      */
-    async getConfigsDefintions(): Promise<ConfigPropertyDefinition[]> {
+    async getConfigsDefinitions(): Promise<ConfigPropertyDefinition[]> {
         // Await a javascript tick so the configs can be loaded
         await new Promise(resolve => setTimeout(resolve));
 
         // We export to an array so the definitions are ordered, which can be helpful
         const configPropertyDefinitions: ConfigPropertyDefinition[] = [];
 
-        this.configs.forEach((_, clazz) => {
-            getConfigValueOptionsMap(clazz.prototype).forEach(configValueOptions => {
-                // Make sure to copy the properties and not the object instance so they can't be altered
-                configPropertyDefinitions.push({ ...configValueOptions });
+        const sortedConfigs = Array.from(this.configs.keys()).sort((a, b) => a.name.localeCompare(b.name));
+
+        sortedConfigs.forEach(clazz => {
+            const sortedValues = Array.from(getConfigValueOptionsMap(clazz.prototype)).sort((a, b) => a[1].name.localeCompare(b[1].name));
+            sortedValues.forEach(([_, { name, description, required, type, recommendedValue }]) => {
+                configPropertyDefinitions.push({ name, description, required, type, recommendedValue });
             });
         });
 

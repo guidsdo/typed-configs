@@ -30,6 +30,10 @@ export function addConfigField(classPrototype: Object, property: string, configV
         },
         set: (newValue: any) => {
             const configValueData = getConfigValueOptions(classPrototype, property);
+            if (!configValueData.type) {
+                throw new Error(`Config field option '${property}' of class '${classPrototype.constructor.name}' has not been processed`);
+            }
+
             if ((configValueData.required && newValue === undefined) || typeof newValue !== configValueData.type) {
                 throw new TypeError(`'${newValue}' must be of type '${configValueData.type}'.`);
             }

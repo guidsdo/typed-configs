@@ -86,8 +86,14 @@ class ConfigManager {
     }
 
     restoreSnapshot(configClass: ClassTypeNoArgs, snapshot: ConfigSnapshot) {
+        const instance = this.get(configClass);
+
+        const knownProperties = Array.from(getConfigValueOptionsMap(configClass.prototype).keys());
+
         for (const property in snapshot) {
-            this.get(configClass)[property] = snapshot[property];
+            if (!knownProperties.includes(property)) throw new Error(`Property '${property}' is unknown in config ${configClass.name}`);
+
+            instance[property] = snapshot[property];
         }
     }
 }

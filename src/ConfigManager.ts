@@ -42,8 +42,7 @@ class ConfigManager {
         // Make sure that any value that is required, has actually been set by either a default value, a config file or env.
         validateRequiredConfigValues(configInstance, clazz);
 
-        this.configs.set(clazz, new clazz());
-        return this.configs.get(clazz) as I;
+        this.configs.set(clazz, configInstance);
     }
 
     get<I>(clazz: ClassTypeNoArgs<I>): I {

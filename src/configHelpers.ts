@@ -20,7 +20,7 @@ export function getEnvironmentVariableKeys(): string[] {
     return Object.keys(process.env);
 }
 
-export function loadEnvironmentVariable(key: string, type: ConfigValueType) {
+export function loadEnvironmentVariable(key: string, expectedType: ConfigValueType) {
     const value = process.env[key];
 
     if (value === undefined) {
@@ -28,7 +28,7 @@ export function loadEnvironmentVariable(key: string, type: ConfigValueType) {
     }
 
     // All env variables are set as strings, so we need to check first if we can parse them
-    switch (type) {
+    switch (expectedType) {
         case "boolean":
             if (["true", "false"].includes(value)) {
                 return Boolean(value);
@@ -46,5 +46,5 @@ export function loadEnvironmentVariable(key: string, type: ConfigValueType) {
             break;
     }
 
-    throw new Error(`Invalid ENV value of property '${key}', which should be of type '${type}'.`);
+    throw new Error(`Invalid ENV value of property '${key}', which should be of type '${expectedType}'.`);
 }

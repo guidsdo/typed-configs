@@ -1,5 +1,5 @@
 import { ClassTypeNoArgs, ConfigOptions, ConfigPropertyDefinition, ConfigSnapshot } from "./types";
-import { getConfigValueNames, getConfigValueOptionsMap, validateConfigFieldOptions, validateRequiredConfigValues } from "./configMetadata";
+import { getConfigValueNames, getConfigValueOptionsMap, processConfigFieldOptions, validateRequiredConfigValues } from "./configMetadata";
 import { getEnvironmentVariableKeys, loadConfigfromYaml, loadEnvironmentVariable } from "./configHelpers";
 
 class ConfigManager {
@@ -14,7 +14,7 @@ class ConfigManager {
         }
 
         // Validate the required field types and the property decorator options
-        validateConfigFieldOptions(clazz);
+        processConfigFieldOptions(clazz);
 
         // 1. Create an instance, so the default class values (like: property = "value") are set.
         this.configs.set(clazz, new clazz());

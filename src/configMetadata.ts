@@ -39,7 +39,7 @@ export function addConfigField(classPrototype: Object, property: string, configV
     });
 }
 
-export function validateConfigFieldOptions(clazz: Function) {
+export function processConfigFieldOptions(clazz: Function) {
     const configMap = getConfigValueOptionsMap(clazz.prototype);
     configMap.forEach((valueOptions, property) => {
         if (typeof valueOptions.required !== "boolean") {

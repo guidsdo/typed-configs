@@ -10,9 +10,18 @@ const configValuesSymbol = Symbol("configValues");
  */
 const ENV_KEY_REGEX = /^([A-Z_])[A-Z\d_]*$/;
 
-export function addConfigField(classPrototype: Object, property: string, configValueOptions: ConfigValueOptions) {
+/**
+ * @param classPrototype Class.prototype (only thing available when using property decorators)
+ * @param property name of the property we're registering
+ * @param configValueOptions
+ * @param overwritable is the config metadata overwritable? Added for testing purposes, default false
+ */
+export function addConfigField(classPrototype: Object, property: string, configValueOptions: ConfigValueOptions, overwritable = false) {
     if (!Object.getOwnPropertySymbols(classPrototype).includes(configValuesSymbol)) {
-        Object.defineProperty(classPrototype, configValuesSymbol, { value: new Map<string, AllConfigValueData>() });
+        Object.defineProperty(classPrototype, configValuesSymbol, {
+            value: new Map<string, AllConfigValueData>(),
+            configurable: overwritable
+        });
     }
 
     const configMap = getConfigValueOptionsMap(classPrototype);
@@ -39,7 +48,8 @@ export function addConfigField(classPrototype: Object, property: string, configV
             }
 
             configValueData.value = newValue;
-        }
+        },
+        configurable: overwritable
     });
 }
 

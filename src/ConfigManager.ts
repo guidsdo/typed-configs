@@ -8,7 +8,7 @@ class ConfigManager {
     /**
      * Add a new config class to the configs list. Please use the decorators iso this, since this
      */
-    add<I extends Object, T extends ClassTypeNoArgs<I>>(clazz: T, options: ConfigOptions): I {
+    add<I extends Object, T extends ClassTypeNoArgs<I>>(clazz: T, options?: ConfigOptions): void {
         if (this.configs.has(clazz)) {
             throw new Error(`Class already added '${clazz.name}'`);
         }
@@ -22,7 +22,7 @@ class ConfigManager {
         const configNamePropertyMapping = getConfigValueNames(clazz.prototype);
 
         // 2. Load the values from given config path (overrides any value already set by a previous step).
-        if (options.configYmlPath) {
+        if (options?.configYmlPath) {
             const yamlValues = loadConfigfromYaml(options.configYmlPath);
             const knownYamlKeys = Object.keys(yamlValues).filter(yamlKey => configNamePropertyMapping.has(yamlKey));
             knownYamlKeys.forEach(key => {

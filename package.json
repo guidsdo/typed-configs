@@ -1,17 +1,17 @@
 {
-  "name": "typedconfig",
+  "name": "typed-configs",
   "version": "0.0.1",
   "description": "Library for accessing your config variables in a typed manner, with runtime checking and a definition exporter. Supports .yml and enviroment variables.",
   "main": "lib/index.js",
   "author": "guidsdo",
   "license": "Apache-2.0",
-  "homepage": "https://github.com/guidsdo/TypedConfig",
+  "homepage": "https://github.com/guidsdo/typed-configs",
   "bugs": {
     "url": "https://github.com/guidsdo/guidsdo/issues"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/guidsdo/TypedConfig.git"
+    "url": "git+https://github.com/guidsdo/typed-configs.git"
   },
   "keywords": [
     "env",

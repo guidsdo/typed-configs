@@ -3,14 +3,14 @@ import * as path from "path";
 import * as Yaml from "yamljs";
 import { ConfigValueType } from "./types";
 
-const projectRoot = path.join(__dirname, "..");
+const currentDir = path.resolve(".");
 
 export function loadConfigfromYaml(configPath: string): Record<string, any> {
-    const configFromRootDir = path.join(projectRoot, configPath);
-    const checkedConfigPath = fs.existsSync(configPath) ? configPath : fs.existsSync(configFromRootDir) ? configFromRootDir : undefined;
+    const cfgPathCurrentDir = path.join(currentDir, configPath);
+    const checkedConfigPath = fs.existsSync(configPath) ? configPath : fs.existsSync(cfgPathCurrentDir) ? cfgPathCurrentDir : undefined;
 
     if (!checkedConfigPath) {
-        throw new Error(`Configuration file ${configPath} does not exist`);
+        throw new Error(`Configuration file '${configPath}' does not exist`);
     }
 
     return Yaml.load(configPath);

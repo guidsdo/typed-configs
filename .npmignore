@@ -11,3 +11,4 @@ coverage
 # package-lock.lock
 # README.md
 tsconfig.json
+__tests__

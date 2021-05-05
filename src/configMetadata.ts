@@ -43,7 +43,9 @@ export function addConfigField(classPrototype: Object, property: string, configV
                 throw new Error(`Config field option '${property}' of class '${classPrototype.constructor.name}' has not been processed`);
             }
 
-            if ((configValueData.required && newValue === undefined) || typeof newValue !== configValueData.type) {
+            // If the value is required, it can't be undefined. Otherwise setting it to undefined is allowed. Otherwise restoring snapshots
+            // won't work and undefined
+            if ((configValueData.required && newValue === undefined) || !["undefined", configValueData.type].includes(typeof newValue)) {
                 throw new TypeError(`Value '${newValue}' of property '${configValueData.name}' must be of type '${configValueData.type}'.`);
             }
 

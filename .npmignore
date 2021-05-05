@@ -12,3 +12,5 @@ coverage
 # README.md
 tsconfig.json
 __tests__
+.prettierrc
+jest.config.js

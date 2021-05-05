@@ -44,7 +44,7 @@ export function addConfigField(classPrototype: Object, property: string, configV
             }
 
             if ((configValueData.required && newValue === undefined) || typeof newValue !== configValueData.type) {
-                throw new TypeError(`'${newValue}' must be of type '${configValueData.type}'.`);
+                throw new TypeError(`Value '${newValue}' of property '${configValueData.name}' must be of type '${configValueData.type}'.`);
             }
 
             configValueData.value = newValue;
@@ -57,22 +57,26 @@ export function processConfigFieldOptions(clazz: Function) {
     const configMap = getConfigValueOptionsMap(clazz.prototype);
     configMap.forEach((valueOptions, property) => {
         if (typeof valueOptions.required !== "boolean") {
-            throw new Error(`Option 'required' for property '${property}' is not a boolean.`);
+            throw new Error(`Option 'required' for property '${property}' is not a boolean in config '${clazz.name}'.`);
         } else if (typeof valueOptions.description !== "string" || !valueOptions.description.length) {
-            throw new Error(`Option 'description' for property '${property}' is not a valid string.`);
+            throw new Error(`Option 'description' for property '${property}' is not a valid string in config '${clazz.name}'.`);
         }
 
         // Design types are always set on the prototype of the class they're in
         const type = Reflect.getMetadata("design:type", clazz.prototype, property);
         if (!type || ![String, Boolean, Number].includes(type)) {
-            throw new Error(`Invalid type '${type}' for property '${property}'. Type must be set to either: string, boolean, number.`);
+            throw new Error(
+                `Invalid type '${type}' for property '${property}' in config '${clazz.name}'. Type must be set to either: string, boolean, number.`
+            );
         }
 
         // Check that the recommended value is also the correct type
         const designType = (type.name as string).toLocaleLowerCase();
         const recommendedValueType = typeof valueOptions.recommendedValue;
         if (valueOptions.recommendedValue && recommendedValueType !== designType) {
-            throw new Error(`Invalid type '${recommendedValueType}' for 'recommendedValue' of '${property}', must be ${designType}.`);
+            throw new Error(
+                `Invalid type '${recommendedValueType}' for 'recommendedValue' of '${property}' in config '${clazz.name}', must be ${designType}.`
+            );
         }
 
         // Check that the name field adheres to the required environment naming rules
@@ -90,7 +94,7 @@ export function validateRequiredConfigValues(instance: Object, clazz: Function) 
     configMap.forEach((valueOptions, property) => {
         const value = (instance as Record<string, any>)[property];
         if (valueOptions.required && ["", undefined, null].includes(value)) {
-            throw new Error(`Required value for property '${property}' has not been set.`);
+            throw new Error(`Required value for property '${valueOptions.name}' has not been set.`);
         }
     });
 }

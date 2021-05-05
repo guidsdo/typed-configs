@@ -63,7 +63,9 @@ describe("configMetadata", () => {
             // Set the default class values
             const classInstance = new ExampleClass();
 
-            expect(() => (classInstance.propertyDefaultHelloWorld = 0 as any)).toThrow("'0' must be of type 'string'.");
+            expect(() => (classInstance.propertyDefaultHelloWorld = 0 as any)).toThrow(
+                "Value '0' of property 'ABC' must be of type 'string'."
+            );
         });
     });
 
@@ -78,11 +80,11 @@ describe("configMetadata", () => {
             // Note: we can't test null or an empty string, because the setter that's added by 'addConfigField' won't allow it.
 
             // Arange
-            addConfigField(ExampleClass.prototype, "propertyNoDefaultValue", { required: true, name: "field", description: "" }, true);
+            addConfigField(ExampleClass.prototype, "propertyNoDefaultValue", { required: true, name: "FIELD_NAME", description: "" }, true);
 
             // Act + assert
             expect(() => validateRequiredConfigValues(new ExampleClass(), ExampleClass)).toThrowError(
-                "Required value for property 'propertyNoDefaultValue' has not been set."
+                "Required value for property 'FIELD_NAME' has not been set."
             );
         });
 
@@ -128,7 +130,7 @@ describe("configMetadata", () => {
             addConfigField(ExampleClass.prototype, "propertyDefaultHelloWorld", { required: "" as any, name: "F", description: "X" }, true);
 
             expect(() => processConfigFieldOptions(ExampleClass)).toThrow(
-                "Option 'required' for property 'propertyDefaultHelloWorld' is not a boolean."
+                "Option 'required' for property 'propertyDefaultHelloWorld' is not a boolean in config 'ExampleClass'."
             );
         });
 
@@ -136,7 +138,7 @@ describe("configMetadata", () => {
             addConfigField(ExampleClass.prototype, "propertyDefaultHelloWorld", { required: false, name: "F", description: "" }, true);
 
             expect(() => processConfigFieldOptions(ExampleClass)).toThrow(
-                "Option 'description' for property 'propertyDefaultHelloWorld' is not a valid string."
+                "Option 'description' for property 'propertyDefaultHelloWorld' is not a valid string in config 'ExampleClass'."
             );
         });
 
@@ -153,7 +155,7 @@ describe("configMetadata", () => {
         this.propertyDefault0 = 0;
         this.propertyDefaultHelloWorld = \"HelloWorld\";
     }
-}' for property 'propertyObject'. Type must be set to either: string, boolean, number.`
+}' for property 'propertyObject' in config 'ExampleClass'. Type must be set to either: string, boolean, number.`
             );
         });
 
@@ -168,7 +170,7 @@ describe("configMetadata", () => {
             );
 
             expect(() => processConfigFieldOptions(ExampleClass)).toThrow(
-                "Invalid type 'number' for 'recommendedValue' of 'propertyDefaultHelloWorld', must be string."
+                "Invalid type 'number' for 'recommendedValue' of 'propertyDefaultHelloWorld' in config 'ExampleClass', must be string."
             );
         });
 

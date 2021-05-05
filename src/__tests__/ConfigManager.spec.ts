@@ -195,6 +195,13 @@ describe("ConfigManager", () => {
                 { required: false, name: "HELLO_WORLD", description: "X" },
                 true
             );
+            Reflect.defineMetadata("design:type", Boolean, ExampleClass.prototype, "propertyDefaultUndefined");
+            addConfigField(
+                ExampleClass.prototype,
+                "propertyDefaultUndefined",
+                { required: false, name: "OPTIONAL_BOOLEAN", description: "Z" },
+                true
+            );
             Reflect.defineMetadata("design:type", String, ExtraExampleClass.prototype, "propertyDefaultFooBar");
             addConfigField(
                 ExtraExampleClass.prototype,
@@ -211,15 +218,19 @@ describe("ConfigManager", () => {
             const extraExampleClassSnapshot = Configs.takeSnapshot(ExtraExampleClass);
 
             // Assert
-            expect(exampleClassSnapshot).toStrictEqual({ propertyDefaultHelloWorld: "Hey World!" });
+            expect(exampleClassSnapshot).toStrictEqual({ propertyDefaultHelloWorld: "Hey World!", propertyDefaultUndefined: undefined });
             expect(extraExampleClassSnapshot).toStrictEqual({ propertyDefaultFooBar: "FooBar" });
 
             // Arange: Change current values
+            Configs.get(ExampleClass).propertyDefaultUndefined = false;
             Configs.get(ExampleClass).propertyDefaultHelloWorld = "Test data, bye world";
             Configs.get(ExtraExampleClass).propertyDefaultFooBar = "Test data, bar foo";
 
-            // Assert: Check that current values have been changed and new snapshot won't change the other later on
-            expect(Configs.takeSnapshot(ExampleClass)).toStrictEqual({ propertyDefaultHelloWorld: "Test data, bye world" });
+            // Assert: Check that current values have been changed and taking a new snapshot won't break restoring another one
+            expect(Configs.takeSnapshot(ExampleClass)).toStrictEqual({
+                propertyDefaultHelloWorld: "Test data, bye world",
+                propertyDefaultUndefined: false
+            });
             expect(Configs.takeSnapshot(ExtraExampleClass)).toStrictEqual({ propertyDefaultFooBar: "Test data, bar foo" });
 
             // Act: Restore the taken snapshots

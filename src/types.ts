@@ -44,4 +44,8 @@ export type ConfigSnapshot = Record<string, SupportedConfigTypes>;
 
 export type ConfigOptions = {
     configYmlPath?: string;
+    /**
+     * By default true.
+     */
+    configYmlRequired?: boolean;
 };

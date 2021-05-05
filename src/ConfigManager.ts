@@ -23,7 +23,7 @@ class ConfigManager {
 
         // 2. Load the values from given config path (overrides any value already set by a previous step).
         if (options?.configYmlPath) {
-            const yamlValues = loadConfigfromYaml(options.configYmlPath);
+            const yamlValues = loadConfigfromYaml(options.configYmlPath, options.configYmlRequired);
             const knownYamlKeys = Object.keys(yamlValues).filter(yamlKey => configNamePropertyMapping.has(yamlKey));
             knownYamlKeys.forEach(key => {
                 const configValueOptions = configNamePropertyMapping.get(key)!;

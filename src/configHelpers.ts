@@ -5,12 +5,16 @@ import { ConfigValueType } from "./types";
 
 const currentDir = path.resolve(".");
 
-export function loadConfigfromYaml(configPath: string): Record<string, any> {
+export function loadConfigfromYaml(configPath: string, isRequired = true): Record<string, any> {
     const cfgPathCurrentDir = path.join(currentDir, configPath);
     const checkedConfigPath = fs.existsSync(configPath) ? configPath : fs.existsSync(cfgPathCurrentDir) ? cfgPathCurrentDir : undefined;
 
     if (!checkedConfigPath) {
-        throw new Error(`Configuration file '${configPath}' does not exist`);
+        if (isRequired) {
+            throw new Error(`Configuration file '${configPath}' does not exist`);
+        }
+
+        return {};
     }
 
     return Yaml.load(configPath);

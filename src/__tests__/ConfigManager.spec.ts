@@ -37,13 +37,13 @@ describe("ConfigManager", () => {
             });
 
             it("should succeed", () => {
-                expect(() => Configs.add(ExampleClass, { configYmlPath: "" })).not.toThrow();
+                expect(() => Configs.add(ExampleClass)).not.toThrow();
             });
 
             it("should throw if the class already has been added", () => {
-                expect(() => Configs.add(ExampleClass, { configYmlPath: "" })).not.toThrow();
+                expect(() => Configs.add(ExampleClass)).not.toThrow();
 
-                expect(() => Configs.add(ExampleClass, { configYmlPath: "" })).toThrow("Class already added 'ExampleClass'");
+                expect(() => Configs.add(ExampleClass)).toThrow("Class already added 'ExampleClass'");
             });
 
             it("should override default values with env variables", () => {
@@ -63,6 +63,10 @@ describe("ConfigManager", () => {
                 expect(() => Configs.add(ExampleClass, { configYmlPath: "doesntexist" })).toThrow(
                     "Configuration file 'doesntexist' does not exist"
                 );
+            });
+
+            it("should not throw when the given config yml file doesn't exist but isn't required", () => {
+                expect(() => Configs.add(ExampleClass, { configYmlPath: "doesntexist", configYmlRequired: false })).not.toThrow();
             });
 
             describe("when there is a yml config file", () => {

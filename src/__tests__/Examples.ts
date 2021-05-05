@@ -5,11 +5,27 @@ import { Config, ConfigValue } from "../decorators";
 
 @Config({ configYmlPath: "configs/test.yml" })
 export class Communicator {
-    @ConfigValue({ required: true, name: "GREETING", description: "They way you say hi to others", recommendedValue: "Hello" })
+    @ConfigValue({
+        name: "GREETING",
+        description: "They way you say hi to others",
+        required: true,
+        recommendedValue: "Hello"
+    })
     greeting!: string;
 
-    @ConfigValue({ required: false, name: "GOODBYE_MESSAGE", description: "The way you say goodbye. Optional." })
+    @ConfigValue({
+        name: "GOODBYE_MESSAGE",
+        description: "The way you say goodbye. Optional.",
+        required: false
+    })
     goodbye: string = "/me left the chat";
+
+    @ConfigValue({
+        name: "IDLE_SOUND",
+        description: "What do you say when doing nothing?",
+        required: false
+    })
+    idleMessage?: string;
 
     nonConfigProperty = "I don't need a type because I don't matter.";
 }

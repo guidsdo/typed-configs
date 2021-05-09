@@ -1,4 +1,4 @@
-import { ClassTypeNoArgs, ConfigOptions, ConfigPropertyDefinition, ConfigSnapshot } from "./types";
+import { ClassTypeNoArgs, ConfigOptions, ConfigPropertyDefinition, ConfigSnapshot, ConfigValueOptions, ConfigValueType } from "./types";
 import { getConfigValueNames, getConfigValueOptionsMap, processConfigFieldOptions, validateRequiredConfigValues } from "./configMetadata";
 import { getEnvironmentVariableKeys, loadConfigfromYaml, loadEnvironmentVariable } from "./configHelpers";
 
@@ -6,20 +6,20 @@ class ConfigManager {
     private readonly configs = new Map<ClassTypeNoArgs, Object>();
 
     /**
-     * Add a new config class to the configs list. Please use the decorators iso this, since this
+     * Add a new config class to the configs list. Please only use this if you know what you're doing.
      */
-    add<I extends Object, T extends ClassTypeNoArgs<I>>(clazz: T, options?: ConfigOptions): void {
-        if (this.configs.has(clazz)) {
-            throw new Error(`Class already added '${clazz.name}'`);
+    add<I extends Object, T extends ClassTypeNoArgs<I>>(configClass: T, options?: ConfigOptions): void {
+        if (this.configs.has(configClass)) {
+            throw new Error(`Class already added '${configClass.name}'`);
         }
 
         // Validate the required field types and the property decorator options
-        processConfigFieldOptions(clazz);
+        processConfigFieldOptions(configClass);
 
         // 1. Create an instance, so the default class values (like: property = "value") are set.
-        this.configs.set(clazz, new clazz());
-        const configInstance = this.configs.get(clazz) as I;
-        const configNamePropertyMapping = getConfigValueNames(clazz.prototype);
+        this.configs.set(configClass, new configClass());
+        const configInstance = this.configs.get(configClass) as I;
+        const configNamePropertyMapping = getConfigValueNames(configClass.prototype);
 
         // 2. Load the values from given config path (overrides any value already set by a previous step).
         if (options?.configYmlPath) {
@@ -40,17 +40,23 @@ class ConfigManager {
         });
 
         // Make sure that any value that is required, has actually been set by either a default value, a config file or env.
-        validateRequiredConfigValues(configInstance, clazz);
+        validateRequiredConfigValues(configInstance, configClass);
 
-        this.configs.set(clazz, configInstance);
+        this.configs.set(configClass, configInstance);
     }
 
-    get<I>(clazz: ClassTypeNoArgs<I>): I {
-        if (!this.configs.has(clazz)) {
-            throw new Error(`Cannot find config instance for '${clazz.name}'`);
+    /**
+     * Get the config instance of the given class.
+     *
+     * @param configClass The config class you want the instance of.
+     * @returns the class' instance
+     */
+    get<I>(configClass: ClassTypeNoArgs<I>): I {
+        if (!this.configs.has(configClass)) {
+            throw new Error(`Cannot find config instance for '${configClass.name}'`);
         }
 
-        return this.configs.get(clazz) as I;
+        return this.configs.get(configClass) as I;
     }
 
     /**
@@ -76,6 +82,29 @@ class ConfigManager {
         return configPropertyDefinitions;
     }
 
+    /**
+     * Copy all the current values of the given config class. This can later be used to restore the values.
+     *
+     * @param configClass
+     * @example
+     * describe("Example", () => {
+     *     let mainConfigSnapshot: Record<string, any>;
+     *
+     *     beforeEach(() => {
+     *         mainConfigSnapshot = Configs.takeSnapshot(MainConfig);
+     *         Configs.get(MainConfig).greeting = "Hey dude";
+     *     });
+     *
+     *     afterEach(() => Configs.restoreSnapshot(FileStoreConfig, fileStoreConfigSnapshot));
+     *
+     *     it("Some test", () => {
+     *         const greeter = new Greeter("Bob");
+     *         expect(greeter.sayGreeting()).toBe("Hey dude");
+     *     });
+     * });
+     *
+     * @returns all the current values of the config
+     */
     takeSnapshot(configClass: ClassTypeNoArgs): ConfigSnapshot {
         const snapshot: ConfigSnapshot = {};
         getConfigValueOptionsMap(configClass.prototype).forEach((configValueOptions, property) => {
@@ -85,7 +114,15 @@ class ConfigManager {
         return snapshot;
     }
 
-    restoreSnapshot(configClass: ClassTypeNoArgs, snapshot: ConfigSnapshot) {
+    /**
+     * Restore the values of the given config class with all the values of the given snapshot.
+     *
+     * @param configClass
+     * @param snapshot
+     *
+     * @example See Configs.takeSnapshot() for a full example
+     */
+    restoreSnapshot(configClass: ClassTypeNoArgs, snapshot: ConfigSnapshot): void {
         const instance = this.get(configClass);
 
         const knownProperties = Array.from(getConfigValueOptionsMap(configClass.prototype).keys());
@@ -98,10 +135,28 @@ class ConfigManager {
     }
 
     /**
-     * Remove all configs from the config manager. This doesn't remove any of the individual config data though.
+     * Remove all configs from the config manager. This doesn't remove any of the individual config data though. Added for testing purposes.
      */
-    removeAllConfigs() {
+    removeAllConfigs(): void {
         this.configs.clear();
+    }
+
+    /**
+     * Get the config property metadata
+     *
+     * @returns {} { name: string, description, required, type, recommendedValue }
+     */
+    getConfigPropertyMetadata<I>(
+        configClass: ClassTypeNoArgs<I>,
+        property: keyof I & string
+    ): ConfigValueOptions & { type: ConfigValueType } {
+        const configValueOptionMap = getConfigValueOptionsMap(configClass.prototype);
+        if (!configValueOptionMap.has(property)) {
+            throw new Error(`Property '${property}' is unknown in config ${configClass.name}`);
+        }
+
+        const { name, description, required, type, recommendedValue } = configValueOptionMap.get(property)!;
+        return { name, description, required, type, recommendedValue };
     }
 }
 

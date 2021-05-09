@@ -256,4 +256,47 @@ describe("ConfigManager", () => {
             );
         });
     });
+
+    describe("getConfigPropertyMetadata", () => {
+        it("should throw an error when the given class doesn't have any config fields", () => {
+            expect(() => Configs.getConfigPropertyMetadata(ExampleClass, "propertyDefaultHelloWorld")).toThrow(
+                "Target ExampleClass doesn't have any config fields."
+            );
+        });
+
+        it("should throw an error when the given class's field doesn't have config metadata", () => {
+            // Arange: Add a config field
+            Reflect.defineMetadata("design:type", String, ExampleClass.prototype, "propertyDefaultHelloWorld");
+            addConfigField(
+                ExampleClass.prototype,
+                "propertyDefaultHelloWorld",
+                { required: false, name: "HELLO_WORLD", description: "X" },
+                true
+            );
+
+            // Act & Assert: Try to get a different field for which there isn't any config metadata
+            expect(() => Configs.getConfigPropertyMetadata(ExampleClass, "propertyDefaultUndefined")).toThrow(
+                "Property 'propertyDefaultUndefined' is unknown in config ExampleClass"
+            );
+        });
+
+        it("should return the metadata of the given field", () => {
+            Reflect.defineMetadata("design:type", String, ExampleClass.prototype, "propertyDefaultHelloWorld");
+            addConfigField(
+                ExampleClass.prototype,
+                "propertyDefaultHelloWorld",
+                { required: false, name: "HELLO_WORLD", description: "X" },
+                true
+            );
+            Configs.add(ExampleClass);
+
+            expect(Configs.getConfigPropertyMetadata(ExampleClass, "propertyDefaultHelloWorld")).toStrictEqual({
+                description: "X",
+                name: "HELLO_WORLD",
+                recommendedValue: undefined,
+                required: false,
+                type: "string"
+            });
+        });
+    });
 });

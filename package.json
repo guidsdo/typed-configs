@@ -1,6 +1,6 @@
 {
   "name": "typed-configs",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "Library for accessing your config variables in a typed manner, with runtime checking and a definition exporter. Supports .yml and enviroment variables.",
   "main": "lib/index.js",
   "author": "guidsdo",

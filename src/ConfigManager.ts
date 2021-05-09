@@ -1,4 +1,4 @@
-import { ClassTypeNoArgs, ConfigOptions, ConfigPropertyDefinition, ConfigSnapshot } from "./types";
+import { ClassTypeNoArgs, ConfigOptions, ConfigPropertyDefinition, ConfigSnapshot, ConfigValueOptions, ConfigValueType } from "./types";
 import { getConfigValueNames, getConfigValueOptionsMap, processConfigFieldOptions, validateRequiredConfigValues } from "./configMetadata";
 import { getEnvironmentVariableKeys, loadConfigfromYaml, loadEnvironmentVariable } from "./configHelpers";
 
@@ -139,6 +139,24 @@ class ConfigManager {
      */
     removeAllConfigs(): void {
         this.configs.clear();
+    }
+
+    /**
+     * Get the config property metadata
+     *
+     * @returns {} { name: string, description, required, type, recommendedValue }
+     */
+    getConfigPropertyMetadata<I>(
+        configClass: ClassTypeNoArgs<I>,
+        property: keyof I & string
+    ): ConfigValueOptions & { type: ConfigValueType } {
+        const configValueOptionMap = getConfigValueOptionsMap(configClass.prototype);
+        if (!configValueOptionMap.has(property)) {
+            throw new Error(`Property '${property}' is unknown in config ${configClass.name}`);
+        }
+
+        const { name, description, required, type, recommendedValue } = configValueOptionMap.get(property)!;
+        return { name, description, required, type, recommendedValue };
     }
 }
 

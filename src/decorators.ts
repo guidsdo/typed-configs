@@ -14,7 +14,7 @@ type ConfigOptions = {
     configYmlPath?: string;
 };
 
-export function Config<T>(options: ConfigOptions): ClassTypeDecorator<T> {
+export function Config<T>(options?: ConfigOptions): ClassTypeDecorator<T> {
     return clazz => Configs.add(clazz, options);
 }
 

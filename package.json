@@ -25,7 +25,6 @@
   ],
   "scripts": {
     "build": "rm -rf lib && tsc",
-    "prepublish": "yarn build",
     "test": "jest",
     "test:watch": "jest --watch --coverage"
   },

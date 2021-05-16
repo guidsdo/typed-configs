@@ -59,8 +59,12 @@ describe("ConfigManager", () => {
                 expect(configInstance.propertyDefaultHelloWorld).toStrictEqual("HeyWorld");
             });
 
-            it("should throw when the given config yml file doesn't exist", () => {
-                expect(() => Configs.add(ExampleClass, { configYmlPath: "doesntexist" })).toThrow(
+            it("should not throw when the given config yml file doesn't exist", () => {
+                expect(() => Configs.add(ExampleClass, { configYmlPath: "doesntexist" })).not.toThrow();
+            });
+
+            it("should throw when the given config yml file doesn't exist but is required", () => {
+                expect(() => Configs.add(ExampleClass, { configYmlPath: "doesntexist", configYmlRequired: true })).toThrow(
                     "Configuration file 'doesntexist' does not exist"
                 );
             });

@@ -5,7 +5,7 @@ import { ConfigValueType } from "./types";
 
 const currentDir = path.resolve(".");
 
-export function loadConfigfromYaml(configPath: string, isRequired = true): Record<string, any> {
+export function loadConfigfromYaml(configPath: string, isRequired = false): Record<string, any> {
     const cfgPathCurrentDir = path.join(currentDir, configPath);
     const checkedConfigPath = fs.existsSync(configPath) ? configPath : fs.existsSync(cfgPathCurrentDir) ? cfgPathCurrentDir : undefined;
 

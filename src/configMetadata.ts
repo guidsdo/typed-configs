@@ -43,8 +43,7 @@ export function addConfigField(classPrototype: Object, property: string, configV
                 throw new Error(`Config field option '${property}' of class '${classPrototype.constructor.name}' has not been processed`);
             }
 
-            // If the value is required, it can't be undefined. Otherwise setting it to undefined is allowed. Otherwise restoring snapshots
-            // won't work and undefined
+            // If the value is required, it can't be undefined. Otherwise setting it to undefined is allowed.
             if ((configValueData.required && newValue === undefined) || !["undefined", configValueData.type].includes(typeof newValue)) {
                 throw new TypeError(`Value '${newValue}' of property '${configValueData.name}' must be of type '${configValueData.type}'.`);
             }
@@ -127,4 +126,9 @@ export function getConfigValueOptionsMap(prototype: Object) {
     }
 
     return (prototype as any)[configValuesSymbol] as Map<string, AllConfigValueData>;
+}
+
+export function setCurrentValuesAsDefaultValues() {
+    // possibleValues
+    // geen waarde, dan is het default
 }

@@ -1,3 +1,4 @@
+import { SupportedConfigTypes } from ".";
 import { Configs } from "./ConfigManager";
 import { addConfigField } from "./configMetadata";
 import { ConfigValueOptions, ClassTypeNoArgs } from "./types";
@@ -24,7 +25,14 @@ export function Config<T>(options?: ConfigOptions): ClassTypeDecorator<T> {
  */
 type SimplePropertyDecorator = (target: object, propertyKey: string) => void;
 
-export function ConfigValue(options: ConfigValueOptions): SimplePropertyDecorator {
+export function ConfigValue(options: {
+    name: string;
+    description: string;
+    required: boolean;
+    requiredIf: keyof 
+    possibleValues?: SupportedConfigTypes[];
+    recommendedValue?: SupportedConfigTypes;
+}): SimplePropertyDecorator {
     return (target, propertyKey) => {
         addConfigField(target, propertyKey, options);
     };

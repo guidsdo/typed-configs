@@ -23,7 +23,8 @@ export class Communicator {
     @ConfigValue({
         name: "IDLE_SOUND",
         description: "What do you say when doing nothing?",
-        required: false
+        required: false,
+        fdsf: 
     })
     idleMessage?: string;
 

@@ -21,9 +21,11 @@ class ConfigManager {
         const configInstance = this.configs.get(configClass) as I;
         const configNamePropertyMapping = getConfigValueNames(configClass.prototype);
 
-        // 2. Load the values from given config path (overrides any value already set by a previous step).
+        // 2. Set the default values as 'defaultValue' in the config property
+
+        // 3. Load the values from given config path (overrides any value already set by a previous step).
         if (options?.configYmlPath) {
-            const yamlValues = loadConfigfromYaml(options.configYmlPath, options.configYmlRequired);
+            const yamlValues = loadConfigfromYaml(options.configYmlPath);
             const knownYamlKeys = Object.keys(yamlValues).filter(yamlKey => configNamePropertyMapping.has(yamlKey));
             knownYamlKeys.forEach(key => {
                 const configValueOptions = configNamePropertyMapping.get(key)!;
@@ -31,7 +33,7 @@ class ConfigManager {
             });
         }
 
-        // 3. Load the values from the environment variables (overrides any value already set by a previous step).
+        // 4. Load the values from the environment variables (overrides any value already set by a previous step).
         const envKeys = getEnvironmentVariableKeys();
         const knownEnvKeys = envKeys.filter(envKey => configNamePropertyMapping.has(envKey));
         knownEnvKeys.forEach(key => {
@@ -70,6 +72,7 @@ class ConfigManager {
         // We export to an array so the definitions are ordered, which can be helpful
         const configPropertyDefinitions: ConfigPropertyDefinition[] = [];
 
+        // Sort by name property so the order is guaranteed to remain the same
         const sortedConfigs = Array.from(this.configs.keys()).sort((a, b) => a.name.localeCompare(b.name));
 
         sortedConfigs.forEach(clazz => {

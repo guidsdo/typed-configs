@@ -63,16 +63,6 @@ describe("ConfigManager", () => {
                 expect(() => Configs.add(ExampleClass, { configYmlPath: "doesntexist" })).not.toThrow();
             });
 
-            it("should throw when the given config yml file doesn't exist but is required", () => {
-                expect(() => Configs.add(ExampleClass, { configYmlPath: "doesntexist", configYmlRequired: true })).toThrow(
-                    "Configuration file 'doesntexist' does not exist"
-                );
-            });
-
-            it("should not throw when the given config yml file doesn't exist but isn't required", () => {
-                expect(() => Configs.add(ExampleClass, { configYmlPath: "doesntexist", configYmlRequired: false })).not.toThrow();
-            });
-
             describe("when there is a yml config file", () => {
                 let ymlFileName = "local.yml";
                 let ylmFilePath = path.join(path.resolve("."), ymlFileName);

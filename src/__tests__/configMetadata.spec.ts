@@ -3,7 +3,8 @@ import {
     validateRequiredConfigValues,
     getConfigValueOptionsMap,
     processConfigFieldOptions,
-    getConfigValueNames
+    getConfigValueNames,
+    extraValidateConfigValues
 } from "../configMetadata";
 import { ExampleClass, removeConfigMetadata } from "./testHelpers";
 
@@ -106,6 +107,56 @@ describe("configMetadata", () => {
         });
     });
 
+    describe("extraValidateConfigValues", () => {
+        it("should throw if a field is invalid according to the extraValidation option", () => {
+            // Arange
+            Reflect.defineMetadata("design:type", Number, ExampleClass.prototype, "propertyDefaultAge");
+            addConfigField(
+                ExampleClass.prototype,
+                "propertyDefaultAge",
+                {
+                    required: false,
+                    name: "AGE",
+                    description: "Driver age",
+                    extraValidations: (age: number) => {
+                        if (age < 18) {
+                            throw new Error("Age config should be greater than 18.");
+                        }
+                    }
+                },
+                true
+            );
+            processConfigFieldOptions(ExampleClass);
+
+            // Act + assert
+            expect(() => extraValidateConfigValues(new ExampleClass(), ExampleClass)).toThrowError("Age config should be greater than 18.");
+        });
+
+        it("should not throw if a field is valid according to the extraValidation option", () => {
+            // Arange
+            Reflect.defineMetadata("design:type", Number, ExampleClass.prototype, "propertyDefaultAge");
+            addConfigField(
+                ExampleClass.prototype,
+                "propertyDefaultAge",
+                {
+                    required: false,
+                    name: "AGE",
+                    description: "Driver age",
+                    extraValidations: (age: number) => {
+                        if (age < 16) {
+                            throw new Error("Age config should be greater than 16.");
+                        }
+                    }
+                },
+                true
+            );
+            processConfigFieldOptions(ExampleClass);
+
+            // Act + assert
+            expect(() => extraValidateConfigValues(new ExampleClass(), ExampleClass)).not.toThrow();
+        });
+    });
+
     describe("getConfigValueNames", () => {
         it("should return all the names of a config", () => {
             // Mimick what Reflect Metadata does when there is a decorator
@@ -154,6 +205,7 @@ describe("configMetadata", () => {
         this.propertyDefaultEmptyString = \"\";
         this.propertyDefault0 = 0;
         this.propertyDefaultHelloWorld = \"HelloWorld\";
+        this.propertyDefaultAge = 17;
     }
 }' for property 'propertyObject' in config 'ExampleClass'. Type must be set to either: string, boolean, number.`
             );

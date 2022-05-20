@@ -5,6 +5,7 @@ export class ExampleClass {
 
     propertyDefault0: number = 0;
     propertyDefaultHelloWorld: string = "HelloWorld";
+    propertyDefaultAge: number = 17;
 
     propertyObject!: ExampleClass;
 }

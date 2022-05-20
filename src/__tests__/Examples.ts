@@ -27,6 +27,18 @@ export class Communicator {
     })
     idleMessage?: string;
 
+    @ConfigValue({
+        name: "AGE",
+        description: "The driver age. should be greater than 18.",
+        required: false,
+        extraValidations: (age: number) => {
+            if (age < 18) {
+                throw new Error("Age config should be greater than 18.");
+            }
+        }
+    })
+    age?: number;
+
     nonConfigProperty = "I don't need a type because I don't matter.";
 }
 

@@ -10,6 +10,7 @@ export type ConfigValueOptions = {
      */
     name: string;
     recommendedValue?: SupportedConfigTypes;
+    extraValidations?: (value: any) => void;
 };
 
 export type AllConfigValueData = ConfigValueOptions & {

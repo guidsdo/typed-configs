@@ -4,7 +4,7 @@ import {
     getConfigValueOptionsMap,
     processConfigFieldOptions,
     getConfigValueNames,
-    extraValidateConfigValues
+    runCustomValidations
 } from "../configMetadata";
 import { ExampleClass, removeConfigMetadata } from "./testHelpers";
 
@@ -107,8 +107,8 @@ describe("configMetadata", () => {
         });
     });
 
-    describe("extraValidateConfigValues", () => {
-        it("should throw if a field is invalid according to the extraValidation option", () => {
+    describe("runCustomValidations", () => {
+        it("should throw if a field is invalid according to the validate option", () => {
             // Arange
             Reflect.defineMetadata("design:type", Number, ExampleClass.prototype, "propertyDefaultAge");
             addConfigField(
@@ -118,10 +118,32 @@ describe("configMetadata", () => {
                     required: false,
                     name: "AGE",
                     description: "Driver age",
-                    extraValidations: (age: number) => {
+                    validate: (age: number) => age >= 18
+                },
+                true
+            );
+            processConfigFieldOptions(ExampleClass);
+
+            // Act + assert
+            expect(() => runCustomValidations(new ExampleClass(), ExampleClass)).toThrowError("The value for property 'AGE' is invalid.");
+        });
+
+        it("should throw a custom error if a field is invalid according to the validate option", () => {
+            // Arange
+            Reflect.defineMetadata("design:type", Number, ExampleClass.prototype, "propertyDefaultAge");
+            addConfigField(
+                ExampleClass.prototype,
+                "propertyDefaultAge",
+                {
+                    required: false,
+                    name: "AGE",
+                    description: "Driver age",
+                    validate: (age: number) => {
                         if (age < 18) {
                             throw new Error("Age config should be greater than 18.");
                         }
+
+                        return true;
                     }
                 },
                 true
@@ -129,10 +151,10 @@ describe("configMetadata", () => {
             processConfigFieldOptions(ExampleClass);
 
             // Act + assert
-            expect(() => extraValidateConfigValues(new ExampleClass(), ExampleClass)).toThrowError("Age config should be greater than 18.");
+            expect(() => runCustomValidations(new ExampleClass(), ExampleClass)).toThrowError("Age config should be greater than 18.");
         });
 
-        it("should not throw if a field is valid according to the extraValidation option", () => {
+        it("should not throw if a field is valid according to the validate option", () => {
             // Arange
             Reflect.defineMetadata("design:type", Number, ExampleClass.prototype, "propertyDefaultAge");
             addConfigField(
@@ -142,18 +164,14 @@ describe("configMetadata", () => {
                     required: false,
                     name: "AGE",
                     description: "Driver age",
-                    extraValidations: (age: number) => {
-                        if (age < 16) {
-                            throw new Error("Age config should be greater than 16.");
-                        }
-                    }
+                    validate: (age: number) => age >= 16
                 },
                 true
             );
             processConfigFieldOptions(ExampleClass);
 
             // Act + assert
-            expect(() => extraValidateConfigValues(new ExampleClass(), ExampleClass)).not.toThrow();
+            expect(() => runCustomValidations(new ExampleClass(), ExampleClass)).not.toThrow();
         });
     });
 

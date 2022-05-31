@@ -62,8 +62,8 @@ export function processConfigFieldOptions(clazz: Function) {
             throw new Error(`Option 'required' for property '${property}' is not a boolean in config '${clazz.name}'.`);
         } else if (typeof valueOptions.description !== "string" || !valueOptions.description.length) {
             throw new Error(`Option 'description' for property '${property}' is not a valid string in config '${clazz.name}'.`);
-        } else if (valueOptions.extraValidations !== undefined && typeof valueOptions.extraValidations !== "function") {
-            throw new Error(`Option 'extraValidations' for property '${property}' is not a valid function in config '${clazz.name}'.`);
+        } else if (valueOptions.validate !== undefined && typeof valueOptions.validate !== "function") {
+            throw new Error(`Option 'validate' for property '${property}' is not a valid function in config '${clazz.name}'.`);
         }
 
         // Design types are always set on the prototype of the class they're in
@@ -103,11 +103,13 @@ export function validateRequiredConfigValues(instance: Object, clazz: Function) 
     });
 }
 
-export function extraValidateConfigValues(instance: Object, clazz: Function) {
+export function runCustomValidations(instance: Object, clazz: Function) {
     const configMap = getConfigValueOptionsMap(clazz.prototype);
     configMap.forEach((valueOptions, property) => {
         const value = (instance as Record<string, any>)[property];
-        valueOptions.extraValidations?.(value);
+        if (valueOptions.validate && !valueOptions.validate(value)) {
+            throw new Error(`The value for property '${valueOptions.name}' is invalid.`);
+        }
     });
 }
 

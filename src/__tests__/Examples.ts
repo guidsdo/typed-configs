@@ -31,10 +31,12 @@ export class Communicator {
         name: "AGE",
         description: "The driver age. should be greater than 18.",
         required: false,
-        extraValidations: (age: number) => {
+        validate: (age: number) => {
             if (age < 18) {
                 throw new Error("Age config should be greater than 18.");
             }
+
+            return true;
         }
     })
     age?: number;

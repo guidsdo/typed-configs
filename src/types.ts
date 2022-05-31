@@ -10,7 +10,11 @@ export type ConfigValueOptions = {
      */
     name: string;
     recommendedValue?: SupportedConfigTypes;
-    extraValidations?: (value: any) => void;
+    /**
+     * Non-async validations that will prevent the config from loading (and thus your program from running)
+     * when returning a false value or throwing an error.
+     */
+    validate?: (value: any) => boolean;
 };
 
 export type AllConfigValueData = ConfigValueOptions & {

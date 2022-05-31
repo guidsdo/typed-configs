@@ -1,6 +1,6 @@
 import { ClassTypeNoArgs, ConfigOptions, ConfigPropertyDefinition, ConfigSnapshot, ConfigValueOptions, ConfigValueType } from "./types";
 import {
-    extraValidateConfigValues,
+    runCustomValidations,
     getConfigValueNames,
     getConfigValueOptionsMap,
     processConfigFieldOptions,
@@ -48,8 +48,7 @@ class ConfigManager {
         // Make sure that any value that is required, has actually been set by either a default value, a config file or env.
         validateRequiredConfigValues(configInstance, configClass);
 
-        // Run extra validations passed by the user
-        extraValidateConfigValues(configInstance, configClass);
+        runCustomValidations(configInstance, configClass);
 
         this.configs.set(configClass, configInstance);
     }

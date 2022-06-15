@@ -1,5 +1,11 @@
 import { ClassTypeNoArgs, ConfigOptions, ConfigPropertyDefinition, ConfigSnapshot, ConfigValueOptions, ConfigValueType } from "./types";
-import { getConfigValueNames, getConfigValueOptionsMap, processConfigFieldOptions, validateRequiredConfigValues } from "./configMetadata";
+import {
+    runCustomValidations,
+    getConfigValueNames,
+    getConfigValueOptionsMap,
+    processConfigFieldOptions,
+    validateRequiredConfigValues
+} from "./configMetadata";
 import { getEnvironmentVariableKeys, loadConfigfromYaml, loadEnvironmentVariable } from "./configHelpers";
 
 class ConfigManager {
@@ -41,6 +47,8 @@ class ConfigManager {
 
         // Make sure that any value that is required, has actually been set by either a default value, a config file or env.
         validateRequiredConfigValues(configInstance, configClass);
+
+        runCustomValidations(configInstance, configClass);
 
         this.configs.set(configClass, configInstance);
     }

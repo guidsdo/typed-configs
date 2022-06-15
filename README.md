@@ -34,6 +34,14 @@ Library for accessing your config variables in a typed manner, with runtime chec
         })
         idleMessage?: string;
 
+        @ConfigValue({
+            name: "AGE",
+            description: "The driver age. should be greater than 18.",
+            required: false,
+            validate: (age: number) => age >= 18
+        })
+        age?: number;
+
         nonConfigProperty = "I don't need a type because I don't matter.";
     }
     ```

@@ -3,7 +3,8 @@ import {
     validateRequiredConfigValues,
     getConfigValueOptionsMap,
     processConfigFieldOptions,
-    getConfigValueNames
+    getConfigValueNames,
+    runCustomValidations
 } from "../configMetadata";
 import { ExampleClass, removeConfigMetadata } from "./testHelpers";
 
@@ -106,6 +107,74 @@ describe("configMetadata", () => {
         });
     });
 
+    describe("runCustomValidations", () => {
+        it("should throw if a field is invalid according to the validate option", () => {
+            // Arange
+            Reflect.defineMetadata("design:type", Number, ExampleClass.prototype, "propertyDefaultAge");
+            addConfigField(
+                ExampleClass.prototype,
+                "propertyDefaultAge",
+                {
+                    required: false,
+                    name: "AGE",
+                    description: "Driver age",
+                    validate: (age: number) => age >= 18
+                },
+                true
+            );
+            processConfigFieldOptions(ExampleClass);
+
+            // Act + assert
+            expect(() => runCustomValidations(new ExampleClass(), ExampleClass)).toThrowError("The value for property 'AGE' is invalid.");
+        });
+
+        it("should throw a custom error if a field is invalid according to the validate option", () => {
+            // Arange
+            Reflect.defineMetadata("design:type", Number, ExampleClass.prototype, "propertyDefaultAge");
+            addConfigField(
+                ExampleClass.prototype,
+                "propertyDefaultAge",
+                {
+                    required: false,
+                    name: "AGE",
+                    description: "Driver age",
+                    validate: (age: number) => {
+                        if (age < 18) {
+                            throw new Error("Age config should be greater than 18.");
+                        }
+
+                        return true;
+                    }
+                },
+                true
+            );
+            processConfigFieldOptions(ExampleClass);
+
+            // Act + assert
+            expect(() => runCustomValidations(new ExampleClass(), ExampleClass)).toThrowError("Age config should be greater than 18.");
+        });
+
+        it("should not throw if a field is valid according to the validate option", () => {
+            // Arange
+            Reflect.defineMetadata("design:type", Number, ExampleClass.prototype, "propertyDefaultAge");
+            addConfigField(
+                ExampleClass.prototype,
+                "propertyDefaultAge",
+                {
+                    required: false,
+                    name: "AGE",
+                    description: "Driver age",
+                    validate: (age: number) => age >= 16
+                },
+                true
+            );
+            processConfigFieldOptions(ExampleClass);
+
+            // Act + assert
+            expect(() => runCustomValidations(new ExampleClass(), ExampleClass)).not.toThrow();
+        });
+    });
+
     describe("getConfigValueNames", () => {
         it("should return all the names of a config", () => {
             // Mimick what Reflect Metadata does when there is a decorator
@@ -154,6 +223,7 @@ describe("configMetadata", () => {
         this.propertyDefaultEmptyString = \"\";
         this.propertyDefault0 = 0;
         this.propertyDefaultHelloWorld = \"HelloWorld\";
+        this.propertyDefaultAge = 17;
     }
 }' for property 'propertyObject' in config 'ExampleClass'. Type must be set to either: string, boolean, number.`
             );

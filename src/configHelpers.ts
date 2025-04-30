@@ -35,7 +35,7 @@ export function loadEnvironmentVariable(key: string, expectedType: ConfigValueTy
     switch (expectedType) {
         case "boolean":
             if (["true", "false"].includes(value)) {
-                return Boolean(value);
+                return value === "true";
             }
             break;
         case "number":

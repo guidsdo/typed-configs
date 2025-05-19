@@ -25,30 +25,26 @@ export function getEnvironmentVariableKeys(): string[] {
 }
 
 export function loadEnvironmentVariable(key: string, expectedType: ConfigValueType) {
-    const value = process.env[key];
+    return checkValue(process.env, key, expectedType);
+}
 
-    if (value === undefined) {
-        return undefined;
-    }
+export function checkValue(envObject: NodeJS.ProcessEnv, key: string, expectedType: ConfigValueType) {
+    const value = envObject[key];
+
+    if (value === undefined) return undefined;
 
     // All env variables are set as strings, so we need to check first if we can parse them
     switch (expectedType) {
         case "boolean":
-            if (["true", "false"].includes(value)) {
-                return value === "true";
-            }
+            if (["true", "false"].includes(value)) return value === "true";
             break;
         case "number":
-            if (value !== "" && Number(value) !== NaN) {
-                return Number(value);
-            }
+            if (value !== "" && !Number.isNaN(Number(value))) return Number(value);
             break;
         case "string":
-            if (value !== "") {
-                return value;
-            }
+            if (value !== "") return value;
             break;
     }
 
-    throw new Error(`Invalid ENV value of property '${key}', which should be of type '${expectedType}'.`);
+    throw new Error(`Invalid ENV value of property '${key}', which should be of type '${expectedType}' but got '${value}'.`);
 }

@@ -1,26 +1,29 @@
+import { ClassType } from "../types";
+
 export class ExampleClass {
     propertyDefaultNull: string = null as any;
-    propertyDefaultEmptyString: string = "";
+    propertyDefaultEmptyString = "";
     propertyDefaultUndefined!: boolean;
 
-    propertyDefault0: number = 0;
-    propertyDefaultHelloWorld: string = "HelloWorld";
-    propertyDefaultAge: number = 17;
+    propertyDefault0 = 0;
+    propertyDefaultHelloWorld = "HelloWorld";
+    propertyDefaultAge = 17;
 
     propertyObject!: ExampleClass;
 }
 
 export class ExtraExampleClass {
-    propertyDefaultFooBar: string = "FooBar";
+    propertyDefaultFooBar = "FooBar";
 }
 
 /**
  * Removes all fields and metadata from the given class.
  */
-export function removeConfigMetadata(clazz: Function) {
+export function removeConfigMetadata(clazz: ClassType) {
     const classPrototype = clazz.prototype;
 
     for (const symbol of Object.getOwnPropertySymbols(classPrototype)) {
+        // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
         delete classPrototype[symbol];
     }
 
@@ -28,6 +31,7 @@ export function removeConfigMetadata(clazz: Function) {
         // Obviously we don't want to delete the constructor
         if (property === "constructor") continue;
 
+        // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
         delete classPrototype[property];
     }
 }

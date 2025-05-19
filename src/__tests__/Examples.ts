@@ -18,7 +18,7 @@ export class Communicator {
         description: "The way you say goodbye. Optional.",
         required: false
     })
-    goodbye: string = "/me left the chat";
+    goodbye = "/me left the chat";
 
     @ConfigValue({
         name: "IDLE_SOUND",

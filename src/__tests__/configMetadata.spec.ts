@@ -220,9 +220,9 @@ describe("configMetadata", () => {
                 `Invalid type 'class ExampleClass {
     constructor() {
         this.propertyDefaultNull = null;
-        this.propertyDefaultEmptyString = \"\";
+        this.propertyDefaultEmptyString = "";
         this.propertyDefault0 = 0;
-        this.propertyDefaultHelloWorld = \"HelloWorld\";
+        this.propertyDefaultHelloWorld = "HelloWorld";
         this.propertyDefaultAge = 17;
     }
 }' for property 'propertyObject' in config 'ExampleClass'. Type must be set to either: string, boolean, number.`

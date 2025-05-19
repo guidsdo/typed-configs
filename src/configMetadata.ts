@@ -1,4 +1,4 @@
-import { AllConfigValueData, ConfigValueOptions, ConfigValueType } from "./types";
+import { AllConfigValueData, ClassTypeNoArgs, ConfigValueOptions, ConfigValueType } from "./types";
 
 const configValuesSymbol = Symbol("configValues");
 
@@ -16,7 +16,7 @@ const ENV_KEY_REGEX = /^([A-Z_])[A-Z\d_]*$/;
  * @param configValueOptions
  * @param overwritable is the config metadata overwritable? Added for testing purposes, default false
  */
-export function addConfigField(classPrototype: Object, property: string, configValueOptions: ConfigValueOptions, overwritable = false) {
+export function addConfigField(classPrototype: object, property: string, configValueOptions: ConfigValueOptions, overwritable = false) {
     if (!Object.getOwnPropertySymbols(classPrototype).includes(configValuesSymbol)) {
         Object.defineProperty(classPrototype, configValuesSymbol, {
             value: new Map<string, AllConfigValueData>(),
@@ -55,7 +55,7 @@ export function addConfigField(classPrototype: Object, property: string, configV
     });
 }
 
-export function processConfigFieldOptions(clazz: Function) {
+export function processConfigFieldOptions(clazz: ClassTypeNoArgs) {
     const configMap = getConfigValueOptionsMap(clazz.prototype);
     configMap.forEach((valueOptions, property) => {
         if (typeof valueOptions.required !== "boolean") {
@@ -93,7 +93,7 @@ export function processConfigFieldOptions(clazz: Function) {
     });
 }
 
-export function validateRequiredConfigValues(instance: Object, clazz: Function) {
+export function validateRequiredConfigValues(instance: object, clazz: ClassTypeNoArgs) {
     const configMap = getConfigValueOptionsMap(clazz.prototype);
     configMap.forEach((valueOptions, property) => {
         const value = (instance as Record<string, any>)[property];
@@ -103,7 +103,7 @@ export function validateRequiredConfigValues(instance: Object, clazz: Function) 
     });
 }
 
-export function runCustomValidations(instance: Object, clazz: Function) {
+export function runCustomValidations(instance: object, clazz: ClassTypeNoArgs) {
     const configMap = getConfigValueOptionsMap(clazz.prototype);
     configMap.forEach((valueOptions, property) => {
         const value = (instance as Record<string, any>)[property];
@@ -113,7 +113,7 @@ export function runCustomValidations(instance: Object, clazz: Function) {
     });
 }
 
-export function getConfigValueNames(prototype: Object): Map<string, { property: string; type: ConfigValueType }> {
+export function getConfigValueNames(prototype: object): Map<string, { property: string; type: ConfigValueType }> {
     const namePropertyMapping = new Map<string, { property: string; type: ConfigValueType }>();
 
     for (const iterator of getConfigValueOptionsMap(prototype)) {
@@ -124,7 +124,7 @@ export function getConfigValueNames(prototype: Object): Map<string, { property: 
     return namePropertyMapping;
 }
 
-function getConfigValueOptions(prototype: Object, property: string) {
+function getConfigValueOptions(prototype: object, property: string) {
     const configMap = getConfigValueOptionsMap(prototype);
     if (!configMap.has(property)) {
         throw new Error(`Property '${property}' isn't defined on ${prototype.constructor.name}.`);
@@ -133,7 +133,7 @@ function getConfigValueOptions(prototype: Object, property: string) {
     return configMap.get(property)!;
 }
 
-export function getConfigValueOptionsMap(prototype: Object) {
+export function getConfigValueOptionsMap(prototype: object) {
     if (!Object.getOwnPropertySymbols(prototype).includes(configValuesSymbol)) {
         throw new Error(`Target ${prototype.constructor.name} doesn't have any config fields.`);
     }

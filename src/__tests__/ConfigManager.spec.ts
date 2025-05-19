@@ -74,8 +74,8 @@ describe("ConfigManager", () => {
             });
 
             describe("when there is a yml config file", () => {
-                let ymlFileName = "local.yml";
-                let ylmFilePath = path.join(path.resolve("."), ymlFileName);
+                const ymlFileName = "local.yml";
+                const ylmFilePath = path.join(path.resolve("."), ymlFileName);
 
                 beforeEach(() => {
                     fs.writeFileSync(ylmFilePath, `HELLO_WORLD: "Yo World!"`);
@@ -125,6 +125,7 @@ describe("ConfigManager", () => {
 
             function removeEnvVariables(envVariables: Record<string, SupportedConfigTypes>) {
                 for (const varName in envVariables) {
+                    // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
                     delete process.env[varName];
                 }
             }

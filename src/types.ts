@@ -26,13 +26,9 @@ export type ConfigSettings = {
     location: string;
 };
 
-export interface ClassType<T extends Object = any> {
-    new (...args: any[]): T;
-}
+export type ClassType<T extends object = any> = new (...args: any[]) => T;
 
-export interface ClassTypeNoArgs<T extends Object = any> {
-    new (): T;
-}
+export type ClassTypeNoArgs<T extends object = any> = new () => T;
 
 export type ConfigPropertyDefinition = {
     /**

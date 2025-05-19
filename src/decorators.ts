@@ -8,13 +8,13 @@ import { ConfigValueOptions, ClassTypeNoArgs } from "./types";
  *
  * We only allow a constructor without args, so we can instantiate and check all (required) property values right away.
  */
-type ClassTypeDecorator<T> = (clazz: ClassTypeNoArgs<T>) => void;
+type ClassTypeDecorator<T extends object> = (clazz: ClassTypeNoArgs<T>) => void;
 
 type ConfigOptions = {
     configYmlPath?: string;
 };
 
-export function Config<T>(options?: ConfigOptions): ClassTypeDecorator<T> {
+export function Config<T extends object>(options?: ConfigOptions): ClassTypeDecorator<T> {
     return clazz => Configs.add(clazz, options);
 }
 

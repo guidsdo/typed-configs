@@ -9,12 +9,12 @@ import {
 import { getEnvironmentVariableKeys, loadConfigfromYaml, loadEnvironmentVariable } from "./configHelpers";
 
 class ConfigManager {
-    private readonly configs = new Map<ClassTypeNoArgs, Object>();
+    private readonly configs = new Map<ClassTypeNoArgs, object>();
 
     /**
      * Add a new config class to the configs list. Please only use this if you know what you're doing.
      */
-    add<I extends Object, T extends ClassTypeNoArgs<I>>(configClass: T, options?: ConfigOptions): void {
+    add<I extends object, T extends ClassTypeNoArgs<I>>(configClass: T, options?: ConfigOptions): void {
         if (this.configs.has(configClass)) {
             throw new Error(`Class already added '${configClass.name}'`);
         }
@@ -42,7 +42,7 @@ class ConfigManager {
         const knownEnvKeys = envKeys.filter(envKey => configNamePropertyMapping.has(envKey));
         knownEnvKeys.forEach(key => {
             const configValueOptions = configNamePropertyMapping.get(key)!;
-            (configInstance as any)[configValueOptions.property] = loadEnvironmentVariable(key, configValueOptions.type);
+            (configInstance as any)[configValueOptions!.property] = loadEnvironmentVariable(key, configValueOptions.type);
         });
 
         // Make sure that any value that is required, has actually been set by either a default value, a config file or env.
@@ -59,7 +59,7 @@ class ConfigManager {
      * @param configClass The config class you want the instance of.
      * @returns the class' instance
      */
-    get<I>(configClass: ClassTypeNoArgs<I>): I {
+    get<I extends object>(configClass: ClassTypeNoArgs<I>): I {
         if (!this.configs.has(configClass)) {
             throw new Error(`Cannot find config instance for '${configClass.name}'`);
         }
@@ -82,7 +82,7 @@ class ConfigManager {
 
         sortedConfigs.forEach(clazz => {
             const sortedValues = Array.from(getConfigValueOptionsMap(clazz.prototype)).sort((a, b) => a[1].name.localeCompare(b[1].name));
-            sortedValues.forEach(([_, { name, description, required, type, recommendedValue }]) => {
+            sortedValues.forEach(([, { name, description, required, type, recommendedValue }]) => {
                 configPropertyDefinitions.push({ name, description, required, type, recommendedValue });
             });
         });
@@ -154,7 +154,7 @@ class ConfigManager {
      *
      * @returns {} { name: string, description, required, type, recommendedValue }
      */
-    getConfigPropertyMetadata<I>(
+    getConfigPropertyMetadata<I extends object>(
         configClass: ClassTypeNoArgs<I>,
         property: keyof I & string
     ): ConfigValueOptions & { type: ConfigValueType } {

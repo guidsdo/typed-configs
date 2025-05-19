@@ -1,6 +1,6 @@
 {
   "name": "typed-configs",
-  "version": "0.1.1",
+  "version": "0.2.1",
   "description": "Library for accessing your config variables in a typed manner, with runtime checking and a definition exporter. Supports .yml and enviroment variables.",
   "main": "lib/index.js",
   "author": "guidsdo",
@@ -25,6 +25,7 @@
   ],
   "scripts": {
     "build": "rm -rf lib && tsc",
+    "build:prod": "rm -rf lib && tsc -p tsconfig.prod.json",
     "test": "jest --config jest.config.ts --coverage",
     "test:watch": "jest --watch --coverage",
     "lint": "eslint . --ext .ts"

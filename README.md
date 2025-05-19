@@ -2,6 +2,8 @@
 
 Library for accessing your config variables in a typed manner, with runtime checking and a definition exporter. Supports .yml and enviroment variables.
 
+## NOTE: Current version of this package is dependent on ['old' decorators](https://devblogs.microsoft.com/typescript/announcing-typescript-5-0/#differences-with-experimental-legacy-decorators), this will change in the close future.
+
 # How to use
 
 1. In your `index.ts` of your project, add `import "reflect-metadata";`

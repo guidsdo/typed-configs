@@ -1,0 +1,22 @@
+{
+  "compilerOptions": {
+    "forceConsistentCasingInFileNames": true,
+    "module": "commonjs",
+    "strict": true,
+    "noEmitOnError": true,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "noFallthroughCasesInSwitch": true,
+    "noImplicitReturns": true,
+    "noUnusedLocals": true,
+    "newLine": "LF",
+    "outDir": "lib/",
+    "sourceMap": false,
+    "declaration": true,
+    "target": "es2018",
+    "lib": ["ES2018"],
+    "types": ["node", "jest"]
+  },
+  "include": ["src"],
+  "exclude": ["src/**/*__tests__/**"]
+}

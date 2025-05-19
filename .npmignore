@@ -8,9 +8,9 @@ coverage
 # .npmignore
 # LICENSE
 # package.json
-# package-lock.lock
 # README.md
 tsconfig.json
 __tests__
 .prettierrc
-jest.config.js
+jest.config.ts
+eslint.config.mjs

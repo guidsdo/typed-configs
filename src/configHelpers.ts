@@ -20,8 +20,12 @@ export function loadConfigfromYaml(configPath: string, isRequired = false): Reco
     return Yaml.load(configPath);
 }
 
-export function getEnvironmentVariableKeys(): string[] {
-    return Object.keys(process.env);
+export function getEnvironmentVariableKeys(filterEmptyValues = false): string[] {
+    return filterEmptyValues
+        ? Object.entries(process.env)
+              .filter(([, value]) => value != "")
+              .map(([key]) => key)
+        : Object.keys(process.env);
 }
 
 export function loadEnvironmentVariable(key: string, expectedType: ConfigValueType) {
@@ -42,8 +46,7 @@ export function checkValue(envObject: NodeJS.ProcessEnv, key: string, expectedTy
             if (value !== "" && !Number.isNaN(Number(value))) return Number(value);
             break;
         case "string":
-            if (value !== "") return value;
-            break;
+            return value;
     }
 
     throw new Error(`Invalid ENV value of property '${key}', which should be of type '${expectedType}' but got '${value}'.`);

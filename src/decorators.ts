@@ -1,6 +1,6 @@
 import { Configs } from "./ConfigManager";
 import { addConfigField } from "./configMetadata";
-import { ConfigValueOptions, ClassTypeNoArgs } from "./types";
+import { ConfigValueOptions, ClassTypeNoArgs, ConfigOptions } from "./types";
 
 /**
  * A class decorator's return value will always be called with Classname on code initialisation.
@@ -9,10 +9,6 @@ import { ConfigValueOptions, ClassTypeNoArgs } from "./types";
  * We only allow a constructor without args, so we can instantiate and check all (required) property values right away.
  */
 type ClassTypeDecorator<T extends object> = (clazz: ClassTypeNoArgs<T>) => void;
-
-type ConfigOptions = {
-    configYmlPath?: string;
-};
 
 export function Config<T extends object>(options?: ConfigOptions): ClassTypeDecorator<T> {
     return clazz => Configs.add(clazz, options);

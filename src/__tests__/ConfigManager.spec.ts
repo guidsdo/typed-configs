@@ -59,6 +59,32 @@ describe("ConfigManager", () => {
                 expect(configInstance.propertyDefaultHelloWorld).toStrictEqual("HeyWorld");
             });
 
+            it("should override default values with env variables when set to empty string", () => {
+                // Arange
+                envVariables = { HELLO_WORLD: "" };
+                setEnvVariables(envVariables);
+
+                // Act
+                expect(() => Configs.add(ExampleClass, {})).not.toThrow();
+
+                // Assert
+                const configInstance = Configs.get(ExampleClass);
+                expect(configInstance.propertyDefaultHelloWorld).toStrictEqual("");
+            });
+
+            it("should ignore env variables with empty values if filtered", () => {
+                // Arange
+                envVariables = { HELLO_WORLD: "" };
+                setEnvVariables(envVariables);
+
+                // Act
+                expect(() => Configs.add(ExampleClass, { ignoreEmptyEnvironmentVariables: true })).not.toThrow();
+
+                // Assert
+                const configInstance = Configs.get(ExampleClass);
+                expect(configInstance.propertyDefaultHelloWorld).toStrictEqual("HelloWorld");
+            });
+
             it("should not throw when the given config yml file doesn't exist", () => {
                 expect(() => Configs.add(ExampleClass, { configYmlPath: "doesntexist" })).not.toThrow();
             });

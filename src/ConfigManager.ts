@@ -38,7 +38,7 @@ class ConfigManager {
         }
 
         // 3. Load the values from the environment variables (overrides any value already set by a previous step).
-        const envKeys = getEnvironmentVariableKeys();
+        const envKeys = getEnvironmentVariableKeys(options?.ignoreEmptyEnvironmentVariables);
         const knownEnvKeys = envKeys.filter(envKey => configNamePropertyMapping.has(envKey));
         knownEnvKeys.forEach(key => {
             const configValueOptions = configNamePropertyMapping.get(key)!;

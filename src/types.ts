@@ -49,4 +49,9 @@ export type ConfigOptions = {
      * By default false.
      */
     configYmlRequired?: boolean;
+
+    /**
+     * By default false.
+     */
+    ignoreEmptyEnvironmentVariables?: boolean;
 };

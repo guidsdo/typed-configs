@@ -12,7 +12,7 @@ Library for accessing your config variables in a typed manner, with runtime chec
     ```typescript
     import { Config, ConfigValue } from "typed-configs";
 
-    @Config({ configYmlPath: "configs/test.yml" })
+    @Config({ configYmlPath: "configs/test.yml", ignoreEmptyValues: false })
     export class Communicator {
         @ConfigValue({
             name: "GREETING",

@@ -45,6 +45,7 @@ export type ConfigSnapshot = Record<string, SupportedConfigTypes>;
 
 export type ConfigOptions = {
     configYmlPath?: string;
+
     /**
      * By default false.
      */
@@ -53,5 +54,5 @@ export type ConfigOptions = {
     /**
      * By default false.
      */
-    ignoreEmptyEnvironmentVariables?: boolean;
+    ignoreEmptyValues?: boolean;
 };

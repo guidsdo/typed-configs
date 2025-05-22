@@ -1,0 +1,19 @@
+NUMBER_VALUE: 42
+STRING_VALUE: Hello, World!
+BOOLEAN_VALUE: true
+LIST_VALUE:
+  - item1
+  - item2
+  - item3
+DICTIONARY_VALUE:
+  key1: value1
+  key2: value2
+  key3: value3
+NESTED_LIST:
+  - item1
+  - item2
+  - item3:
+      subitem1: value1
+      subitem2: value2
+EMPTY_STRING: ""
+EMPTY_VALUE: null

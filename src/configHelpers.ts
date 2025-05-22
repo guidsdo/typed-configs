@@ -1,11 +1,12 @@
 import * as fs from "fs";
 import * as path from "path";
 import * as Yaml from "yamljs";
-import { ConfigValueType } from "./types";
+import { ConfigValueType, SupportedConfigTypes } from "./types";
+import { isEmptyValue } from "./configMetadata";
 
 const currentDir = path.resolve(".");
 
-export function loadConfigfromYaml(configPath: string, isRequired = false): Record<string, any> {
+export function loadConfigfromYaml(configPath: string, isRequired = false): Record<string, unknown> {
     const cfgPathCurrentDir = path.join(currentDir, configPath);
     const checkedConfigPath = fs.existsSync(configPath) ? configPath : fs.existsSync(cfgPathCurrentDir) ? cfgPathCurrentDir : undefined;
 
@@ -20,22 +21,12 @@ export function loadConfigfromYaml(configPath: string, isRequired = false): Reco
     return Yaml.load(configPath);
 }
 
-export function getEnvironmentVariableKeys(filterEmptyValues = false): string[] {
-    return filterEmptyValues
-        ? Object.entries(process.env)
-              .filter(([, value]) => value != "")
-              .map(([key]) => key)
-        : Object.keys(process.env);
+export function loadEnvironmentVariables() {
+    return process.env;
 }
 
-export function loadEnvironmentVariable(key: string, expectedType: ConfigValueType) {
-    return checkValue(process.env, key, expectedType);
-}
-
-export function checkValue(envObject: NodeJS.ProcessEnv, key: string, expectedType: ConfigValueType) {
-    const value = envObject[key];
-
-    if (value === undefined) return undefined;
+export function getValueFromString(key: string, value: string | undefined, expectedType: ConfigValueType) {
+    if (isEmptyValue(value)) return undefined;
 
     // All env variables are set as strings, so we need to check first if we can parse them
     switch (expectedType) {
@@ -43,10 +34,29 @@ export function checkValue(envObject: NodeJS.ProcessEnv, key: string, expectedTy
             if (["true", "false"].includes(value)) return value === "true";
             break;
         case "number":
-            if (value !== "" && !Number.isNaN(Number(value))) return Number(value);
+            if (value !== "" && Number.isFinite(Number(value))) return Number(value);
             break;
         case "string":
             return value;
+    }
+
+    throw new Error(`Invalid ENV value of property '${key}', which should be of type '${expectedType}' but got '${value}'.`);
+}
+
+export function getValue(key: string, value: unknown, expectedType: ConfigValueType): SupportedConfigTypes | undefined {
+    if (isEmptyValue(value)) return undefined;
+    if (typeof value === "string") return getValueFromString(key, value, expectedType);
+
+    switch (expectedType) {
+        case "number":
+            if (typeof value === "number" && Number.isFinite(value)) return value;
+            break;
+        case "boolean":
+            if (typeof value === "boolean") return value;
+            break;
+        case "string":
+            if (typeof value === "string") return value;
+            break;
     }
 
     throw new Error(`Invalid ENV value of property '${key}', which should be of type '${expectedType}' but got '${value}'.`);

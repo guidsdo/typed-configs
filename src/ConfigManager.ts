@@ -4,9 +4,10 @@ import {
     getConfigValueNames,
     getConfigValueOptionsMap,
     processConfigFieldOptions,
-    validateRequiredConfigValues
+    validateRequiredConfigValues,
+    isEmptyValue
 } from "./configMetadata";
-import { getEnvironmentVariableKeys, loadConfigfromYaml, loadEnvironmentVariable } from "./configHelpers";
+import { getValue, loadConfigfromYaml, loadEnvironmentVariables, getValueFromString } from "./configHelpers";
 
 class ConfigManager {
     private readonly configs = new Map<ClassTypeNoArgs, object>();
@@ -30,20 +31,28 @@ class ConfigManager {
         // 2. Load the values from given config path (overrides any value already set by a previous step).
         if (options?.configYmlPath) {
             const yamlValues = loadConfigfromYaml(options.configYmlPath, options.configYmlRequired);
-            const knownYamlKeys = Object.keys(yamlValues).filter(yamlKey => configNamePropertyMapping.has(yamlKey));
-            knownYamlKeys.forEach(key => {
+            for (const [key, yamlValue] of Object.entries(yamlValues)) {
+                if (!configNamePropertyMapping.has(key)) continue;
+
                 const configValueOptions = configNamePropertyMapping.get(key)!;
-                (configInstance as any)[configValueOptions.property] = yamlValues[key];
-            });
+                const value = getValue(key, yamlValue, configValueOptions.type);
+                if (options?.ignoreEmptyValues && isEmptyValue(value)) continue;
+
+                (configInstance as any)[configValueOptions.property] = value;
+            }
         }
 
         // 3. Load the values from the environment variables (overrides any value already set by a previous step).
-        const envKeys = getEnvironmentVariableKeys(options?.ignoreEmptyEnvironmentVariables);
-        const knownEnvKeys = envKeys.filter(envKey => configNamePropertyMapping.has(envKey));
-        knownEnvKeys.forEach(key => {
+        const envKeys = loadEnvironmentVariables();
+        for (const [key, stringValue] of Object.entries(envKeys)) {
+            if (!configNamePropertyMapping.has(key)) continue;
+
             const configValueOptions = configNamePropertyMapping.get(key)!;
-            (configInstance as any)[configValueOptions!.property] = loadEnvironmentVariable(key, configValueOptions.type);
-        });
+            const value = getValueFromString(key, stringValue, configValueOptions.type);
+            if (options?.ignoreEmptyValues && isEmptyValue(value)) continue;
+
+            (configInstance as any)[configValueOptions!.property] = value;
+        }
 
         // Make sure that any value that is required, has actually been set by either a default value, a config file or env.
         validateRequiredConfigValues(configInstance, configClass);

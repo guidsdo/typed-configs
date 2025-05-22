@@ -10,6 +10,8 @@ const configValuesSymbol = Symbol("configValues");
  */
 const ENV_KEY_REGEX = /^([A-Z_])[A-Z\d_]*$/;
 
+const EMPTY_VALUES = new Set(["", undefined, null]);
+
 /**
  * @param classPrototype Class.prototype (only thing available when using property decorators)
  * @param property name of the property we're registering
@@ -97,7 +99,7 @@ export function validateRequiredConfigValues(instance: object, clazz: ClassTypeN
     const configMap = getConfigValueOptionsMap(clazz.prototype);
     configMap.forEach((valueOptions, property) => {
         const value = (instance as Record<string, any>)[property];
-        if (valueOptions.required && ["", undefined, null].includes(value)) {
+        if (valueOptions.required && isEmptyValue(value)) {
             throw new Error(`Required value for property '${valueOptions.name}' has not been set.`);
         }
     });
@@ -139,4 +141,8 @@ export function getConfigValueOptionsMap(prototype: object) {
     }
 
     return (prototype as any)[configValuesSymbol] as Map<string, AllConfigValueData>;
+}
+
+export function isEmptyValue(value: any): value is undefined | null | "" {
+    return EMPTY_VALUES.has(value);
 }

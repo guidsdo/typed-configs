@@ -1,15 +1,31 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`configHelpers checkValue when expecting a boolean should throw when a non-valid string boolean is given 1`] = `"Invalid ENV value of property 'TEST_KEY', which should be of type 'boolean' but got 'treu'."`;
+exports[`configHelpers getValue when expecting a boolean should throw when a non-valid string boolean is given 1`] = `"Invalid ENV value of property 'TEST_KEY', which should be of type 'boolean' but got 'treu'."`;
 
-exports[`configHelpers checkValue when expecting a boolean should throw when a non-valid string boolean is given 2`] = `"Invalid ENV value of property 'TEST_KEY', which should be of type 'boolean' but got '0'."`;
+exports[`configHelpers getValue when expecting a boolean should throw when a non-valid string boolean is given 2`] = `"Invalid ENV value of property 'TEST_KEY', which should be of type 'boolean' but got '0'."`;
 
-exports[`configHelpers checkValue when expecting a boolean should throw when a non-valid string boolean is given 3`] = `"Invalid ENV value of property 'TEST_KEY', which should be of type 'boolean' but got '1'."`;
+exports[`configHelpers getValue when expecting a boolean should throw when a non-valid string boolean is given 3`] = `"Invalid ENV value of property 'TEST_KEY', which should be of type 'boolean' but got '1'."`;
 
-exports[`configHelpers checkValue when expecting a number should throw when a non-valid number string is given 1`] = `"Invalid ENV value of property 'TEST_KEY', which should be of type 'number' but got 'not-a-number'."`;
+exports[`configHelpers getValue when expecting a number should throw when a non-valid number is given 1`] = `"Invalid ENV value of property 'TEST_KEY', which should be of type 'number' but got 'NaN'."`;
 
-exports[`configHelpers checkValue when expecting a number should throw when a non-valid number string is given 2`] = `"Invalid ENV value of property 'TEST_KEY', which should be of type 'number' but got 'one'."`;
+exports[`configHelpers getValue when expecting a number should throw when a non-valid number string is given 1`] = `"Invalid ENV value of property 'TEST_KEY', which should be of type 'number' but got 'not-a-number'."`;
 
-exports[`configHelpers checkValue when expecting a number should throw when a non-valid number string is given 3`] = `"Invalid ENV value of property 'TEST_KEY', which should be of type 'number' but got 'NaN'."`;
+exports[`configHelpers getValue when expecting a number should throw when a non-valid number string is given 2`] = `"Invalid ENV value of property 'TEST_KEY', which should be of type 'number' but got 'one'."`;
 
-exports[`configHelpers checkValue when expecting a number should throw when a non-valid number string is given 4`] = `"Invalid ENV value of property 'TEST_KEY', which should be of type 'number' but got '1 1'."`;
+exports[`configHelpers getValue when expecting a number should throw when a non-valid number string is given 3`] = `"Invalid ENV value of property 'TEST_KEY', which should be of type 'number' but got '1 1'."`;
+
+exports[`configHelpers getValueFromString when expecting a boolean should throw when a non-valid string boolean is given 1`] = `"Invalid ENV value of property 'TEST_KEY', which should be of type 'boolean' but got 'treu'."`;
+
+exports[`configHelpers getValueFromString when expecting a boolean should throw when a non-valid string boolean is given 2`] = `"Invalid ENV value of property 'TEST_KEY', which should be of type 'boolean' but got '0'."`;
+
+exports[`configHelpers getValueFromString when expecting a boolean should throw when a non-valid string boolean is given 3`] = `"Invalid ENV value of property 'TEST_KEY', which should be of type 'boolean' but got '1'."`;
+
+exports[`configHelpers getValueFromString when expecting a number should throw when a non-valid number string is given 1`] = `"Invalid ENV value of property 'TEST_KEY', which should be of type 'number' but got 'not-a-number'."`;
+
+exports[`configHelpers getValueFromString when expecting a number should throw when a non-valid number string is given 2`] = `"Invalid ENV value of property 'TEST_KEY', which should be of type 'number' but got 'one'."`;
+
+exports[`configHelpers getValueFromString when expecting a number should throw when a non-valid number string is given 3`] = `"Invalid ENV value of property 'TEST_KEY', which should be of type 'number' but got 'NaN'."`;
+
+exports[`configHelpers getValueFromString when expecting a number should throw when a non-valid number string is given 4`] = `"Invalid ENV value of property 'TEST_KEY', which should be of type 'number' but got '1 1'."`;
+
+exports[`configHelpers loadConfigfromYaml should throw an error when the config file does not exist and is required 1`] = `"Configuration file 'nonexistent.yml' does not exist"`;

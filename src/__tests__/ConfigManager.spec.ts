@@ -69,16 +69,16 @@ describe("ConfigManager", () => {
 
                 // Assert
                 const configInstance = Configs.get(ExampleClass);
-                expect(configInstance.propertyDefaultHelloWorld).toStrictEqual("");
+                expect(configInstance.propertyDefaultHelloWorld).toStrictEqual(undefined);
             });
 
-            it("should ignore env variables with empty values if filtered", () => {
+            it("should ignore empty values if 'ignoreEmptyValues' is set", () => {
                 // Arange
                 envVariables = { HELLO_WORLD: "" };
                 setEnvVariables(envVariables);
 
                 // Act
-                expect(() => Configs.add(ExampleClass, { ignoreEmptyEnvironmentVariables: true })).not.toThrow();
+                expect(() => Configs.add(ExampleClass, { ignoreEmptyValues: true })).not.toThrow();
 
                 // Assert
                 const configInstance = Configs.get(ExampleClass);
